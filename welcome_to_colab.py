@@ -7,7 +7,7 @@ Original file is located at
     https://colab.research.google.com/notebooks/intro.ipynb
 """
 
-pip install openpyxl
+#pip install openpyxl
 
 import pandas as pd
 import streamlit as st
@@ -47,6 +47,7 @@ def calcular_riesgo_individual():
 
 def calcular_riesgo_desde_hoja():
     st.header("Calcular Riesgo desde una Hoja de Cálculo")
+    st.write("La composición de la planilla debe ser: nombre, criterio 1, criterio 2, criterio 3, criterio 4 y criterio 5") # Mensaje agregado
     archivo = st.file_uploader("Suba el archivo de la hoja de cálculo (.xlsx):", type=["xlsx"])
 
     if archivo is not None:
