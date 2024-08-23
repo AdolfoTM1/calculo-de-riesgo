@@ -7,7 +7,7 @@ Original file is located at
     https://colab.research.google.com/notebooks/intro.ipynb
 """
 
-#!pip install streamlit==1.23.0
+pip install openpyxl
 
 import pandas as pd
 import streamlit as st
