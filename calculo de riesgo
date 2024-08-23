@@ -1,0 +1,66 @@
+def calcular_riesgo(criterios):
+    # Validación de los criterios
+    for i in range(5):
+        if criterios[i] < 1 or criterios[i] > 10:
+            return f"La puntuación del Criterio {i+1} debe estar entre 1 y 10.", None
+
+    # Calcular la puntuación total
+    puntuacion_total = sum(criterios)
+
+    # Determinar el nivel de riesgo
+    if puntuacion_total <= 25:
+        riesgo = "Bajo"
+    elif 26 <= puntuacion_total <= 35:
+        riesgo = "Medio"
+    else:
+        riesgo = "Alto"
+
+    return riesgo, puntuacion_total
+
+def calcular_riesgo_individual():
+    st.header("Calcular Riesgo Individual")
+    criterios = []
+    for i in range(5):
+        criterio = st.number_input(f"Criterio {i+1} (1-10):", min_value=1, max_value=10, step=1)
+        criterios.append(criterio)
+    
+    if st.button("Calcular Riesgo"):
+        riesgo, puntuacion_total = calcular_riesgo(criterios)
+        if riesgo:
+            st.write(f"El riesgo del cliente es: **{riesgo}** (Puntuación total: {puntuacion_total})")
+        else:
+            st.write(puntuacion_total) # Error message
+
+def calcular_riesgo_desde_hoja():
+    st.header("Calcular Riesgo desde una Hoja de Cálculo")
+    archivo = st.file_uploader("Suba el archivo de la hoja de cálculo (.xlsx):", type=["xlsx"])
+    
+    if archivo is not None:
+        try:
+            df = pd.read_excel(archivo)
+            resultados = []
+            for index, row in df.iterrows():
+                criterios = [row[i] for i in df.columns[:5]]
+                riesgo, puntuacion_total = calcular_riesgo(criterios)
+                if riesgo:
+                    resultados.append(f"Cliente {index + 1}: Riesgo **{riesgo}** (Puntuación total: {puntuacion_total})")
+                else:
+                    st.write(puntuacion_total) # Error message
+            for resultado in resultados:
+                st.write(resultado)
+        except Exception as e:
+            st.write(f"Error al procesar la hoja de cálculo: {e}")
+
+def main():
+    st.title("Sistema de Cálculo de Riesgo de Lavado de Activos")
+    
+    opciones = ["Calcular riesgo individual", "Calcular riesgo desde una hoja de cálculo"]
+    eleccion = st.sidebar.selectbox("Seleccione una opción", opciones)
+    
+    if eleccion == "Calcular riesgo individual":
+        calcular_riesgo_individual()
+    elif eleccion == "Calcular riesgo desde una hoja de cálculo":
+        calcular_riesgo_desde_hoja()
+
+if __name__ == "__main__":
+    main()
