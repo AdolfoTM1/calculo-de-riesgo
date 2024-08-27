@@ -47,22 +47,19 @@ def calcular_riesgo_individual():
 
 def calcular_riesgo_desde_hoja():
     st.header("Calcular Riesgo desde una Hoja de Cálculo")
-    st.write("La composición de la planilla debe ser: nombre, criterio 1, criterio 2, criterio 3, criterio 4 y criterio 5") # Mensaje agregado
+    st.write("La composición de la planilla debe ser: nombre, criterio 1, criterio 2, criterio 3, criterio 4 y criterio 5")
     archivo = st.file_uploader("Suba el archivo de la hoja de cálculo (.xlsx):", type=["xlsx"])
-
+    
     if archivo is not None:
         try:
-            df = pd.read_excel(archivo)
-            resultados = []
+            df = pd.read_excel(archivo, dtype={'nombre': str, 'criterio 1': int, 'criterio 2': int, 'criterio 3': int, 'criterio 4': int, 'criterio 5': int})
+            riesgos = []
             for index, row in df.iterrows():
-                criterios = [row[i] for i in df.columns[:5]]
-                riesgo, puntuacion_total = calcular_riesgo(criterios)
-                if riesgo:
-                    resultados.append(f"Cliente {index + 1}: Riesgo **{riesgo}** (Puntuación total: {puntuacion_total})")
-                else:
-                    st.write(puntuacion_total) # Error message
-            for resultado in resultados:
-                st.write(resultado)
+                criterios = [row[i] for i in df.columns[1:6]]  # Obtener los valores de los criterios
+                riesgo, _ = calcular_riesgo(criterios)
+                riesgos.append(riesgo)
+            df['Riesgo'] = riesgos  # Agregar la columna 'Riesgo' al DataFrame
+            st.dataframe(df)  # Mostrar el DataFrame con la columna 'Riesgo'
         except Exception as e:
             st.write(f"Error al procesar la hoja de cálculo: {e}")
 
